@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>EnumCentricStatusManagement</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Kürşat Solmaz</Authors>
+    <Company>UmbrellaFrame</Company>
+    <Product>EnumCentricStatusManagement</Product>
+    <Description>A library for managing status attributes with enums and providing centralized error handling.</Description>
+    <Copyright>Copyright © UmbrellaFrame 2024</Copyright>
+    <PackageTags>Enum-Centric Status Management, enum, status, attribute, error-handling, centralized management, enum-extensions, result-management, enum-based error</PackageTags>
+    <RepositoryUrl>https://github.com/ksomaz/EnumCentricStatusManagement</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+  </ItemGroup>
+
+</Project>
