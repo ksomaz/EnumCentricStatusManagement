@@ -1,10 +1,26 @@
 
+using EnumCentricStatusManagement.Core;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using Xunit;
 
 namespace BlogPostTests
 {
+    public enum TestStatus
+    {
+        [Status("New Record Created.", StatusType.Success)]
+        NewRecord,
+
+        [Status("Registration Updated.", StatusType.Success)]
+        UpdatedRecord,
+
+        [Status("Record Deleted.", StatusType.Success)]
+        DeletedRecord,
+
+        [Status("User Information Could Not Be Verified", StatusType.Error)]
+        UserInformationCouldNotBeVerified,
+    }
+
     public class BlogPostDatabaseTests
     {
         private const string ConnectionString = "Server=.;Database=master;User Id=sa;Password=123;TrustServerCertificate=True;";
@@ -101,17 +117,22 @@ namespace BlogPostTests
                     ");
 
                 // Step 2: Insert a new blog post
-                int statusCode;
-                ExecuteStoredProcedure(connection, "TestBlogDB", "InserOrUpdateBlogPost", 0, "First Post", "This is the content of the first post.", 1, out statusCode);
-                Assert.Equal(0, statusCode); // Blog successfully added
+                TestStatus testStatus;
+                ExecuteStoredProcedure(connection, "TestBlogDB", "InserOrUpdateBlogPost", 0, "First Post", "This is the content of the first post.", 1, out testStatus);
+                Assert.Equal(TestStatus.NewRecord, testStatus); // Blog successfully added
 
                 // Step 3: Update the blog post
-                ExecuteStoredProcedure(connection, "TestBlogDB", "InserOrUpdateBlogPost", 1, "Updated Post", "This is the updated content.", 1, out statusCode);
-                Assert.Equal(1, statusCode); // Blog successfully updated
+                ExecuteStoredProcedure(connection, "TestBlogDB", "InserOrUpdateBlogPost", 1, "Updated Post", "This is the updated content.", 1, out testStatus);
+                Assert.Equal(TestStatus.UpdatedRecord, testStatus); // Blog successfully updated
 
                 // Step 4: Attempt to insert a blog post with a non-existent MainTopicId
-                ExecuteStoredProcedure(connection, "TestBlogDB", "InserOrUpdateBlogPost", 0, "Invalid Post", "This post has an invalid MainTopicId.", 999, out statusCode);
-                Assert.Equal(2, statusCode); // No parent topic title found
+                ExecuteStoredProcedure(connection, "TestBlogDB", "InserOrUpdateBlogPost", 0, "Invalid Post", "This post has an invalid MainTopicId.", 999, out testStatus);
+                Assert.Equal(TestStatus.UserInformationCouldNotBeVerified, testStatus); // No parent topic title found
+
+                if((TestStatus)testStatus.GetEnumStatus().Type == TestStatus.UserInformationCouldNotBeVerified)
+                {
+                    Assert.Equal("User Information Could Not Be Verified", testStatus.GetEnumStatus().Message); // No parent topic title found
+                }
             }
         }
 
@@ -123,7 +144,7 @@ namespace BlogPostTests
             }
         }
 
-        private void ExecuteStoredProcedure(SqlConnection connection, string database, string procedureName, int id, string title, string content, int mainTopicId, out int statusCode)
+        private void ExecuteStoredProcedure(SqlConnection connection, string database, string procedureName, int id, string title, string content, int mainTopicId, out TestStatus testStatus)
         {
             using (var command = new SqlCommand(procedureName, connection))
             {
@@ -136,7 +157,7 @@ namespace BlogPostTests
                 command.Parameters.Add(statusCodeParam);
 
                 command.ExecuteNonQuery();
-                statusCode = (int)statusCodeParam.Value;
+                testStatus = (TestStatus)statusCodeParam.Value;
             }
         }
     }
