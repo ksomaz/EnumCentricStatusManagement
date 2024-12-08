@@ -1,4 +1,4 @@
-# EnumCentricStatusManagement
+# Enum-Centric Status Management
 
 EnumCentricStatusManagement is an open-source C# library that provides a modern approach to **enum-based state management** in software projects. This library enhances enums with **customizable attributes** and improves code quality with **centralized error handling**. 
 
