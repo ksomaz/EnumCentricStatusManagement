@@ -1,8 +1,8 @@
-﻿
-using System;
-using EnumCentricStatusManagement.Core.Internal;
 
-namespace EnumCentricStatusManagement.Core
+using System;
+using UmbrellaFrame.EnumCentricStatusManagement.Core.Internal;
+
+namespace UmbrellaFrame.EnumCentricStatusManagement.Core
 {
     /// <summary>
     /// Provides extension methods for reading informational metadata from enum values.

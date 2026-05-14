@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace EnumCentricStatusManagement.Core
+namespace UmbrellaFrame.EnumCentricStatusManagement.Core
 {
     /// <summary>
     /// Represents ordered informational metadata resolved from an enum value.

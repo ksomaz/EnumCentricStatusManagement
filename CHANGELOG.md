@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## 1.4.0
+
+- Renamed the public package identity to `UmbrellaFrame.EnumCentricStatusManagement`.
+- Added UmbrellaFrame-branded assembly and root namespace metadata.
+- Added a package icon and repository logo asset.
+- Updated documentation and samples to use the `UmbrellaFrame.EnumCentricStatusManagement.Core` namespace.
+
 ## 1.3.0
 
 - Added cached enum metadata lookup to avoid repeated reflection work.

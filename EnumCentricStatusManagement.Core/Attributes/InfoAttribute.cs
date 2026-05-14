@@ -1,7 +1,7 @@
-﻿
+
 using System;
 
-namespace EnumCentricStatusManagement.Core
+namespace UmbrellaFrame.EnumCentricStatusManagement.Core
 {
     /// <summary>
     /// Defines ordered informational metadata for an enum field.

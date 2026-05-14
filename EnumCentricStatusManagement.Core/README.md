@@ -1,19 +1,21 @@
-# EnumCentricStatusManagement
+# UmbrellaFrame.EnumCentricStatusManagement
 
-EnumCentricStatusManagement is a lightweight enum metadata package for .NET.
+UmbrellaFrame.EnumCentricStatusManagement is a lightweight enum metadata package for .NET.
+
+![UmbrellaFrame.EnumCentricStatusManagement logo](https://raw.githubusercontent.com/ksomaz/EnumCentricStatusManagement/master/assets/umbrellaframe-enumcentricstatusmanagement-icon.png)
 
 It keeps status messages, severity values, and display metadata close to the enum values that own them. The package is useful for API responses, database status codes, workflow results, validation outcomes, and other enum-based state flows.
 
 ## Install
 
 ```sh
-dotnet add package EnumCentricStatusManagement
+dotnet add package UmbrellaFrame.EnumCentricStatusManagement
 ```
 
 ## Status Metadata
 
 ```csharp
-using EnumCentricStatusManagement.Core;
+using UmbrellaFrame.EnumCentricStatusManagement.Core;
 
 public enum OperationStatus
 {
@@ -78,7 +80,7 @@ Console.WriteLine(info.Description);
 
 ## Türkçe Özet
 
-EnumCentricStatusManagement, enum değerlerine merkezi mesaj, durum tipi ve açıklayıcı metadata eklemek için kullanılır.
+UmbrellaFrame.EnumCentricStatusManagement, enum değerlerine merkezi mesaj, durum tipi ve açıklayıcı metadata eklemek için kullanılır.
 
 Bu paket özellikle veritabanından, API'den veya farklı sistemlerden gelen sayısal durum kodlarını daha okunabilir domain durumlarına çevirmek için faydalıdır.
 

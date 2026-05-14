@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">UmbrellaFrame.EnumCentricStatusManagement icon</title>
+  <desc id="desc">UmbrellaFrame umbrella logo style with EnumCentricStatusManagement text and enum status metadata symbol.</desc>
+  <rect width="512" height="512" fill="#ffffff"/>
+  <path d="M256 26c-28 0-44 18-44 46" fill="none" stroke="#a40000" stroke-width="12" stroke-linecap="round"/>
+  <path d="M256 26v318" fill="none" stroke="#a40000" stroke-width="10" stroke-linecap="round"/>
+  <path d="M42 237c30 38 57 38 88 0 30 38 58 38 89 0 30 38 58 38 88 0 30 38 58 38 89 0 30 38 57 38 88 0-31 119-117 187-228 187S73 356 42 237z" fill="#ffffff" stroke="#a40000" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M130 237c13 76 54 139 126 187M219 237c4 87 17 146 37 187M307 237c-4 87-17 146-51 187M396 237c-13 76-54 139-140 187" fill="none" stroke="#a40000" stroke-width="4" opacity=".82"/>
+  <path d="M256 424v46" fill="none" stroke="#a40000" stroke-width="10" stroke-linecap="round"/>
+  <path d="M238 470c18 20 36 20 54 0" fill="none" stroke="#a40000" stroke-width="8" stroke-linecap="round"/>
+  <g transform="translate(171 252)">
+    <ellipse cx="85" cy="24" rx="53" ry="18" fill="#ffffff" stroke="#2b2b2b" stroke-width="7"/>
+    <path d="M32 24v74c0 10 24 19 53 19s53-9 53-19V24" fill="#ffffff" stroke="#2b2b2b" stroke-width="7"/>
+    <path d="M32 60c0 10 24 19 53 19s53-9 53-19M32 96c0 10 24 19 53 19s53-9 53-19" fill="none" stroke="#2b2b2b" stroke-width="7"/>
+    <path d="M11 67c13-25 38-38 74-38" fill="none" stroke="#c00000" stroke-width="8" stroke-linecap="round"/>
+    <path d="M26 50 10 68l25 4" fill="none" stroke="#c00000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M159 73c-13 25-38 38-74 38" fill="none" stroke="#c00000" stroke-width="8" stroke-linecap="round"/>
+    <path d="M144 90l16-18-25-4" fill="none" stroke="#c00000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <rect x="44" y="106" width="424" height="116" fill="#ffffff"/>
+  <text x="256" y="154" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" fill="#161616">EnumCentric</text>
+  <text x="256" y="206" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="800" fill="#b00000">StatusManagement</text>
+</svg>

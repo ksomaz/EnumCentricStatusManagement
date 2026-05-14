@@ -1,8 +1,10 @@
-# Enum-Centric Status Management
+# UmbrellaFrame.EnumCentricStatusManagement
 
 [![CI](https://github.com/ksomaz/EnumCentricStatusManagement/actions/workflows/ci.yml/badge.svg)](https://github.com/ksomaz/EnumCentricStatusManagement/actions/workflows/ci.yml)
 
-EnumCentricStatusManagement is a lightweight .NET library that turns enum values into a centralized status metadata layer.
+UmbrellaFrame.EnumCentricStatusManagement is a lightweight .NET library that turns enum values into a centralized status metadata layer.
+
+![UmbrellaFrame.EnumCentricStatusManagement logo](assets/umbrellaframe-enumcentricstatusmanagement-icon.png)
 
 It helps teams keep status messages, severity information, and descriptive metadata close to the enum members that own them, instead of spreading repetitive `switch`, `if`, and magic-number mapping logic across services, controllers, database adapters, and UI code.
 
@@ -16,7 +18,7 @@ Many business applications already communicate state through enum values or nume
 - workflow results,
 - validation and domain operation outcomes.
 
-Those codes are stable, but the meaning around them often becomes scattered. EnumCentricStatusManagement keeps that meaning in one place.
+Those codes are stable, but the meaning around them often becomes scattered. UmbrellaFrame.EnumCentricStatusManagement keeps that meaning in one place.
 
 ## Key Capabilities
 
@@ -34,13 +36,13 @@ Those codes are stable, but the meaning around them often becomes scattered. Enu
 ## Installation
 
 ```sh
-dotnet add package EnumCentricStatusManagement
+dotnet add package UmbrellaFrame.EnumCentricStatusManagement
 ```
 
 ## Quick Example
 
 ```csharp
-using EnumCentricStatusManagement.Core;
+using UmbrellaFrame.EnumCentricStatusManagement.Core;
 
 public enum UserRegistrationStatus
 {
@@ -168,7 +170,7 @@ dotnet pack EnumCentricStatusManagement.Core/EnumCentricStatusManagement.Core.cs
 
 ## Türkçe
 
-EnumCentricStatusManagement, enum değerlerine merkezi durum mesajı, durum tipi ve açıklayıcı metadata eklemek için geliştirilmiş hafif bir .NET kütüphanesidir.
+UmbrellaFrame.EnumCentricStatusManagement, enum değerlerine merkezi durum mesajı, durum tipi ve açıklayıcı metadata eklemek için geliştirilmiş hafif bir .NET kütüphanesidir.
 
 Özellikle veritabanı, harici API, kuyruk sistemi veya domain operasyonlarından gelen sayısal durum kodlarını daha okunabilir ve yönetilebilir hale getirmek için kullanılır.
 
@@ -184,7 +186,7 @@ EnumCentricStatusManagement, enum değerlerine merkezi durum mesajı, durum tipi
 ### Türkçe Kullanım Örneği
 
 ```csharp
-using EnumCentricStatusManagement.Core;
+using UmbrellaFrame.EnumCentricStatusManagement.Core;
 
 public enum SiparisDurumu
 {

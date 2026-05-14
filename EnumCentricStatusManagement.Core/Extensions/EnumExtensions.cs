@@ -1,10 +1,10 @@
-﻿
+
 using System;
 using System.Globalization;
 using System.Resources;
-using EnumCentricStatusManagement.Core.Internal;
+using UmbrellaFrame.EnumCentricStatusManagement.Core.Internal;
 
-namespace EnumCentricStatusManagement.Core
+namespace UmbrellaFrame.EnumCentricStatusManagement.Core
 {
     /// <summary>
     /// Provides extension methods for reading status metadata from enum values.

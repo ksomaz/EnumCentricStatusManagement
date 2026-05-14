@@ -1,4 +1,4 @@
-namespace EnumCentricStatusManagement.Core.Internal
+namespace UmbrellaFrame.EnumCentricStatusManagement.Core.Internal
 {
     internal sealed class EnumMemberMetadata
     {
