@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\EnumCentricStatusManagement.Core\EnumCentricStatusManagement.Core.csproj" />
+    <ProjectReference Include="..\..\UmbrellaFrame.EnumCentricStatusManagement.Core\UmbrellaFrame.EnumCentricStatusManagement.Core.csproj" />
   </ItemGroup>
 
 </Project>

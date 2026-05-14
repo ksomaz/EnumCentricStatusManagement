@@ -27,7 +27,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="README.md" />
+    <None Remove="LICENSE" />
     <None Remove="icon.png" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="LICENSE" Pack="true" PackagePath="\" />
     <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 

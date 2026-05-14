@@ -130,7 +130,7 @@ var description = AccountState.Active.GetEnumInfoOrDefault(
 ### Runnable Example
 
 ```bash
-dotnet run --project samples/StatusMappingExample/StatusMappingExample.csproj
+dotnet run --project samples/UmbrellaFrame.EnumCentricStatusManagement.StatusMappingExample/UmbrellaFrame.EnumCentricStatusManagement.StatusMappingExample.csproj
 ```
 
 Expected output:
@@ -162,8 +162,8 @@ dotnet test
 Create a release package:
 
 ```bash
-dotnet build EnumCentricStatusManagement.Core/EnumCentricStatusManagement.Core.csproj -c Release
-dotnet pack EnumCentricStatusManagement.Core/EnumCentricStatusManagement.Core.csproj -c Release --no-build
+dotnet build UmbrellaFrame.EnumCentricStatusManagement.Core/UmbrellaFrame.EnumCentricStatusManagement.Core.csproj -c Release
+dotnet pack UmbrellaFrame.EnumCentricStatusManagement.Core/UmbrellaFrame.EnumCentricStatusManagement.Core.csproj -c Release --no-build
 ```
 
 ### License
