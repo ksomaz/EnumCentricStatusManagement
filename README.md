@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://www.nuget.org/packages/UmbrellaFrame.EnumCentricStatusManagement"><img src="https://img.shields.io/badge/NuGet-ready-004880?style=flat-square" alt="NuGet ready" /></a>
-  <a href="https://github.com/ksomaz/EnumCentricStatusManagement/actions"><img src="https://img.shields.io/badge/CI-configured-2088ff?style=flat-square" alt="CI configured" /></a>
+  <a href="https://github.com/ksomaz/EnumCentricStatusManagement/actions/workflows/ci.yml"><img src="https://github.com/ksomaz/EnumCentricStatusManagement/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="LICENSE.txt"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="MIT license" /></a>
   <a href="https://learn.microsoft.com/dotnet/standard/net-standard"><img src="https://img.shields.io/badge/.NET%20Standard-2.0-purple?style=flat-square" alt=".NET Standard 2.0" /></a>
 </p>
