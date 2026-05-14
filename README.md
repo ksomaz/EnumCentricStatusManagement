@@ -1,45 +1,39 @@
-# UmbrellaFrame.EnumCentricStatusManagement
+# UmbrellaFrame.EnumCentricStatusManagement ![EnumCentricStatusManagement](https://raw.githubusercontent.com/ksomaz/EnumCentricStatusManagement/master/assets/umbrellaframe-enumcentricstatusmanagement-icon.png) [![NuGet](https://img.shields.io/nuget/v/UmbrellaFrame.EnumCentricStatusManagement.svg?style=flat-square)](https://www.nuget.org/packages/UmbrellaFrame.EnumCentricStatusManagement) [![CI](https://github.com/ksomaz/EnumCentricStatusManagement/actions/workflows/ci.yml/badge.svg)](https://github.com/ksomaz/EnumCentricStatusManagement/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE.txt) [![.NET Standard 2.0](https://img.shields.io/badge/.NET%20Standard-2.0-purple?style=flat-square)](https://learn.microsoft.com/dotnet/standard/net-standard)
 
-[![CI](https://github.com/ksomaz/EnumCentricStatusManagement/actions/workflows/ci.yml/badge.svg)](https://github.com/ksomaz/EnumCentricStatusManagement/actions/workflows/ci.yml)
+**Language / Dil:** [English](#english) - [Turkce](#turkce)
 
-UmbrellaFrame.EnumCentricStatusManagement is a lightweight .NET library that turns enum values into a centralized status metadata layer.
+---
 
-![UmbrellaFrame.EnumCentricStatusManagement logo](assets/umbrellaframe-enumcentricstatusmanagement-icon.png)
+## English
 
-It helps teams keep status messages, severity information, and descriptive metadata close to the enum members that own them, instead of spreading repetitive `switch`, `if`, and magic-number mapping logic across services, controllers, database adapters, and UI code.
+**Enum metadata layer for centralized status, message, and info management in .NET**
 
-## Why It Exists
+Zero database dependency - cached reflection - safe `Try...` APIs - typed metadata models.
 
-Many business applications already communicate state through enum values or numeric status codes:
+UmbrellaFrame.EnumCentricStatusManagement lets you decorate enum members with status and info attributes, then resolve messages, severity values, names, and descriptions from one centralized place. It is designed for API responses, stored procedure status codes, workflow outcomes, validation states, and enum-based domain results.
 
-- stored procedure output parameters,
-- external API response codes,
-- queue event states,
-- workflow results,
-- validation and domain operation outcomes.
+```text
+UmbrellaFrame.EnumCentricStatusManagement
+-> StatusAttribute, InfoAttribute, StatusType, InfoType
+-> GetEnumStatus / TryGetEnumStatus
+-> GetStatusMetadata / TryGetStatusMetadata
+-> GetEnumInfo / GetEnumInfoOrDefault
+-> GetInfoMetadata / TryGetInfoMetadata
+```
 
-Those codes are stable, but the meaning around them often becomes scattered. UmbrellaFrame.EnumCentricStatusManagement keeps that meaning in one place.
+### Design Philosophy
 
-## Key Capabilities
+The package intentionally stays small. It does not try to become a result framework, ORM, validation framework, or localization system.
 
-- Attribute-based status metadata for enum members.
-- Centralized message and severity handling.
-- Safe `Try...` APIs for unknown or missing metadata.
-- Typed convenience models: `StatusMetadata` and `InfoMetadata`.
-- Cached reflection after the first lookup.
-- Optional info metadata for display names and descriptions.
-- Localization helper through `ResourceManager`.
-- `netstandard2.0` target for broad compatibility.
-- No database dependency in the core package.
-- XML documentation support for IDE and NuGet consumers.
+Its job is to keep enum-owned metadata close to the enum member that owns it. Boundary values can be unsafe, so every required lookup has a safe `Try...` alternative. Reflection is cached internally after the first lookup, keeping the public API simple without repeatedly scanning attributes.
 
-## Installation
+### Installation
 
-```sh
+```bash
 dotnet add package UmbrellaFrame.EnumCentricStatusManagement
 ```
 
-## Quick Example
+### Quick Start
 
 ```csharp
 using UmbrellaFrame.EnumCentricStatusManagement.Core;
@@ -55,18 +49,15 @@ public enum UserRegistrationStatus
     [Status("User information could not be verified.", StatusType.Error)]
     VerificationFailed = 2
 }
+
+var status = UserRegistrationStatus.VerificationFailed;
+var metadata = status.GetStatusMetadata();
+
+Console.WriteLine(metadata.Message);
+Console.WriteLine(metadata.IsError);
 ```
 
-Read required metadata when the enum value is trusted:
-
-```csharp
-var metadata = UserRegistrationStatus.VerificationFailed.GetStatusMetadata();
-
-Console.WriteLine(metadata.Message); // User information could not be verified.
-Console.WriteLine(metadata.IsError); // True
-```
-
-Use safe lookup at system boundaries:
+Boundary-safe usage:
 
 ```csharp
 var status = (UserRegistrationStatus)statusCodeFromDatabase;
@@ -81,9 +72,7 @@ return metadata.IsError
     : Results.Ok(metadata.Message);
 ```
 
-## Info Metadata
-
-Use `InfoAttribute` when enum values also need display metadata:
+### Info Metadata
 
 ```csharp
 public enum AccountState
@@ -101,7 +90,7 @@ Console.WriteLine(info.Name);
 Console.WriteLine(info.Description);
 ```
 
-Fallback reads are available for partial metadata:
+Fallback reads:
 
 ```csharp
 var description = AccountState.Active.GetEnumInfoOrDefault(
@@ -109,41 +98,27 @@ var description = AccountState.Active.GetEnumInfoOrDefault(
     "No description available.");
 ```
 
-## When To Use It
+### Public API
 
-Use this package when:
+| API | Description |
+|---|---|
+| `[Status("message", StatusType)]` | Adds status message and severity metadata |
+| `[Info("name", "description")]` | Adds ordered display metadata |
+| `GetEnumStatus()` | Reads required `StatusAttribute` |
+| `TryGetEnumStatus(out StatusAttribute)` | Safe status attribute lookup |
+| `GetStatusMetadata()` | Returns typed `StatusMetadata` |
+| `TryGetStatusMetadata(out StatusMetadata)` | Safe typed status lookup |
+| `GetEnumInfos()` | Reads required info entries |
+| `TryGetEnumInfos(out string[])` | Safe info array lookup |
+| `GetEnumInfo(InfoType)` | Reads one required info entry |
+| `GetEnumInfoOrDefault(InfoType, string)` | Reads one info entry or fallback |
+| `GetInfoMetadata()` | Returns typed `InfoMetadata` |
+| `TryGetInfoMetadata(out InfoMetadata)` | Safe typed info lookup |
+| `GetLocalizedMessage(ResourceManager, string)` | Reads resource text by enum member name |
 
-- your application has repeated enum-to-message mapping logic,
-- numeric status codes need to become readable domain states,
-- API or database results need consistent success/warning/error handling,
-- status metadata should be close to the enum definition,
-- you want a small package instead of a full result-handling framework.
+### Runnable Example
 
-Avoid it when:
-
-- status rules require complex runtime behavior,
-- messages must be fully dynamic and data-driven,
-- your project already has a mature result/error abstraction.
-
-## API Overview
-
-| API | Purpose |
-| --- | --- |
-| `GetEnumStatus()` | Returns the required `StatusAttribute`; throws a clear exception when missing. |
-| `TryGetEnumStatus(out StatusAttribute)` | Safe status attribute lookup. |
-| `GetStatusMetadata()` | Returns a typed `StatusMetadata` convenience model. |
-| `TryGetStatusMetadata(out StatusMetadata)` | Safe typed status metadata lookup. |
-| `GetEnumInfos()` | Returns all required `InfoAttribute` entries. |
-| `TryGetEnumInfos(out string[])` | Safe info array lookup. |
-| `GetEnumInfo(InfoType)` | Returns one required info entry by index. |
-| `GetEnumInfoOrDefault(InfoType, string)` | Returns one info entry or a fallback value. |
-| `GetInfoMetadata()` | Returns a typed `InfoMetadata` convenience model. |
-| `TryGetInfoMetadata(out InfoMetadata)` | Safe typed info metadata lookup. |
-| `GetLocalizedMessage(ResourceManager, string)` | Reads a resource value keyed by enum member name. |
-
-## Runnable Sample
-
-```sh
+```bash
 dotnet run --project samples/StatusMappingExample/StatusMappingExample.csproj
 ```
 
@@ -153,9 +128,21 @@ Expected output:
 Error: User information could not be verified.
 ```
 
-## Development
+### Why This Package?
 
-```sh
+| Feature | EnumCentricStatusManagement | Switch statements | Full result framework |
+|---|:---:|:---:|:---:|
+| Enum-owned messages | Yes | Manual | Partial |
+| Safe unknown-code handling | Yes | Manual | Yes |
+| Cached attribute lookup | Yes | No | Depends |
+| Zero database dependency | Yes | Yes | Yes |
+| Small API surface | Yes | Yes | No |
+| Typed metadata models | Yes | No | Depends |
+| Works with numeric boundary codes | Yes | Manual | Yes |
+
+### Development
+
+```bash
 dotnet restore
 dotnet build
 dotnet test
@@ -163,40 +150,51 @@ dotnet test
 
 Create a release package:
 
-```sh
+```bash
 dotnet build EnumCentricStatusManagement.Core/EnumCentricStatusManagement.Core.csproj -c Release
 dotnet pack EnumCentricStatusManagement.Core/EnumCentricStatusManagement.Core.csproj -c Release --no-build
 ```
 
-## Türkçe
+### License
 
-UmbrellaFrame.EnumCentricStatusManagement, enum değerlerine merkezi durum mesajı, durum tipi ve açıklayıcı metadata eklemek için geliştirilmiş hafif bir .NET kütüphanesidir.
+MIT (c) UmbrellaFrame
 
-Özellikle veritabanı, harici API, kuyruk sistemi veya domain operasyonlarından gelen sayısal durum kodlarını daha okunabilir ve yönetilebilir hale getirmek için kullanılır.
+---
 
-### Ne Sağlar?
+## Turkce
 
-- Enum değerinin mesajını enum tanımının yanında tutar.
-- `Success`, `Warning`, `Error` gibi durum tiplerini standartlaştırır.
-- Dağınık `switch` / `if` bloklarını azaltır.
-- Bilinmeyen enum değerlerinde güvenli `Try...` metotları sunar.
-- Reflection maliyetini ilk okumadan sonra cache ile azaltır.
-- NuGet paketi olarak bağımsızdır; veritabanı bağımlılığı içermez.
+**.NET icin merkezi enum durum, mesaj ve bilgi metadata katmani**
 
-### Türkçe Kullanım Örneği
+Veritabani bagimliligi yok - cache'li reflection - guvenli `Try...` API'leri - tiplenmis metadata modelleri.
+
+UmbrellaFrame.EnumCentricStatusManagement, enum uyelerine status ve info attribute'lari ekleyerek mesaj, durum tipi, isim ve aciklama bilgilerini tek merkezden okumanizi saglar. API cevaplari, stored procedure durum kodlari, workflow sonuclari, validasyon durumlari ve enum tabanli domain sonuc akislari icin tasarlanmistir.
+
+### Tasarim Felsefesi
+
+Bu paket bilerek kucuk tutulur. Bir result framework, ORM, validasyon framework'u veya tam kapsamli localization sistemi olmaya calismaz.
+
+Amaci, enum'a ait metadata'yi dogrudan enum uyesinin yaninda tutmaktir. Dis sistemlerden gelen durum kodlari guvensiz olabilecegi icin gerekli okuma metotlarinin guvenli `Try...` alternatifleri vardir. Reflection ilk okumadan sonra cache'lenir.
+
+### Kurulum
+
+```bash
+dotnet add package UmbrellaFrame.EnumCentricStatusManagement
+```
+
+### Hizli Baslangic
 
 ```csharp
 using UmbrellaFrame.EnumCentricStatusManagement.Core;
 
 public enum SiparisDurumu
 {
-    [Status("Sipariş başarıyla oluşturuldu.", StatusType.Success)]
+    [Status("Siparis basariyla olusturuldu.", StatusType.Success)]
     Olusturuldu = 0,
 
-    [Status("Sipariş onay bekliyor.", StatusType.Warning)]
+    [Status("Siparis onay bekliyor.", StatusType.Warning)]
     OnayBekliyor = 1,
 
-    [Status("Sipariş oluşturulamadı.", StatusType.Error)]
+    [Status("Siparis olusturulamadi.", StatusType.Error)]
     Olusturulamadi = 2
 }
 
@@ -207,14 +205,14 @@ Console.WriteLine(metadata.Message);
 Console.WriteLine(metadata.IsError);
 ```
 
-Harici sistemlerden gelen kodlarda güvenli kullanım:
+Harici sistemlerden gelen kodlarda guvenli kullanim:
 
 ```csharp
 var durum = (SiparisDurumu)veritabanindanGelenDurumKodu;
 
 if (!durum.TryGetStatusMetadata(out var metadata))
 {
-    return Results.Problem("Bilinmeyen durum kodu döndü.");
+    return Results.Problem("Bilinmeyen durum kodu dondu.");
 }
 
 return metadata.IsError
@@ -222,14 +220,50 @@ return metadata.IsError
     : Results.Ok(metadata.Message);
 ```
 
-### Ne Zaman Tercih Edilmeli?
+### Info Metadata
 
-Bu paket; küçük, net ve merkezi bir enum metadata çözümü gerektiğinde uygundur. Büyük bir result framework yerine, mevcut enum tabanlı akışınızı daha okunabilir ve bakımı kolay hale getirmek için tasarlanmıştır.
+```csharp
+public enum HesapDurumu
+{
+    [Info("Aktif", "Hesap sisteme giris yapabilir.")]
+    Aktif,
 
-## Release Notes
+    [Info("Askida", "Hesap manuel inceleme bekliyor.")]
+    Askida
+}
 
-See [CHANGELOG.md](CHANGELOG.md).
+var info = HesapDurumu.Aktif.GetInfoMetadata();
 
-## License
+Console.WriteLine(info.Name);
+Console.WriteLine(info.Description);
+```
 
-MIT. See [LICENSE.txt](LICENSE.txt).
+### Genel API
+
+| API | Aciklama |
+|---|---|
+| `[Status("mesaj", StatusType)]` | Durum mesaji ve durum tipi ekler |
+| `[Info("isim", "aciklama")]` | Sirali gorunum metadata'si ekler |
+| `GetEnumStatus()` | Zorunlu status attribute'unu okur |
+| `TryGetEnumStatus(out StatusAttribute)` | Guvenli status attribute okuma |
+| `GetStatusMetadata()` | Tiplenmis `StatusMetadata` dondurur |
+| `TryGetStatusMetadata(out StatusMetadata)` | Guvenli tiplenmis status okuma |
+| `GetEnumInfo(InfoType)` | Tek bir info alanini okur |
+| `GetEnumInfoOrDefault(InfoType, string)` | Info alanini veya fallback degeri dondurur |
+| `GetInfoMetadata()` | Tiplenmis `InfoMetadata` dondurur |
+| `TryGetInfoMetadata(out InfoMetadata)` | Guvenli tiplenmis info okuma |
+
+### Neden Bu Paket?
+
+| Ozellik | EnumCentricStatusManagement | Switch bloklari | Buyuk result framework |
+|---|:---:|:---:|:---:|
+| Enum uzerinde merkezi mesaj | Evet | Manuel | Kismen |
+| Bilinmeyen kodlarda guvenli okuma | Evet | Manuel | Evet |
+| Cache'li attribute okuma | Evet | Hayir | Degisir |
+| Veritabani bagimliligi yok | Evet | Evet | Evet |
+| Kucuk API yuzeyi | Evet | Evet | Hayir |
+| Tiplenmis metadata modeli | Evet | Hayir | Degisir |
+
+### Lisans
+
+MIT (c) UmbrellaFrame

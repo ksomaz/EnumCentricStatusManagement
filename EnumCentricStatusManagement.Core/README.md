@@ -1,18 +1,22 @@
-# UmbrellaFrame.EnumCentricStatusManagement
+# UmbrellaFrame.EnumCentricStatusManagement ![EnumCentricStatusManagement](https://raw.githubusercontent.com/ksomaz/EnumCentricStatusManagement/master/assets/umbrellaframe-enumcentricstatusmanagement-icon.png) [![NuGet](https://img.shields.io/nuget/v/UmbrellaFrame.EnumCentricStatusManagement.svg?style=flat-square)](https://www.nuget.org/packages/UmbrellaFrame.EnumCentricStatusManagement) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE) [![.NET Standard 2.0](https://img.shields.io/badge/.NET%20Standard-2.0-purple?style=flat-square)](https://learn.microsoft.com/dotnet/standard/net-standard)
 
-UmbrellaFrame.EnumCentricStatusManagement is a lightweight enum metadata package for .NET.
+**Language / Dil:** [English](#english) - [Turkce](#turkce)
 
-![UmbrellaFrame.EnumCentricStatusManagement logo](https://raw.githubusercontent.com/ksomaz/EnumCentricStatusManagement/master/assets/umbrellaframe-enumcentricstatusmanagement-icon.png)
+---
 
-It keeps status messages, severity values, and display metadata close to the enum values that own them. The package is useful for API responses, database status codes, workflow results, validation outcomes, and other enum-based state flows.
+## English
 
-## Install
+**Enum metadata layer for centralized status, message, and info management in .NET**
 
-```sh
+Zero database dependency - cached reflection - safe `Try...` APIs - typed metadata models.
+
+### Installation
+
+```bash
 dotnet add package UmbrellaFrame.EnumCentricStatusManagement
 ```
 
-## Status Metadata
+### Quick Start
 
 ```csharp
 using UmbrellaFrame.EnumCentricStatusManagement.Core;
@@ -35,7 +39,7 @@ Console.WriteLine(metadata.Message);
 Console.WriteLine(metadata.IsError);
 ```
 
-Use safe lookup for values coming from external systems:
+Safe boundary lookup:
 
 ```csharp
 var status = (OperationStatus)externalStatusCode;
@@ -46,54 +50,46 @@ if (status.TryGetStatusMetadata(out var metadata))
 }
 ```
 
-## Info Metadata
+### Included APIs
 
-```csharp
-public enum AccountState
-{
-    [Info("Active", "The account can use the system.")]
-    Active,
+| API | Description |
+|---|---|
+| `[Status]` | Status message and severity metadata |
+| `[Info]` | Ordered display metadata |
+| `GetStatusMetadata()` | Typed status metadata |
+| `TryGetStatusMetadata(out StatusMetadata)` | Safe status metadata lookup |
+| `GetInfoMetadata()` | Typed info metadata |
+| `TryGetInfoMetadata(out InfoMetadata)` | Safe info metadata lookup |
+| `GetEnumInfoOrDefault(InfoType, string)` | Info value with fallback |
 
-    [Info("Suspended", "The account requires manual review.")]
-    Suspended
-}
+---
 
-var info = AccountState.Active.GetInfoMetadata();
+## Turkce
 
-Console.WriteLine(info.Name);
-Console.WriteLine(info.Description);
+**.NET icin merkezi enum durum, mesaj ve bilgi metadata katmani**
+
+Veritabani bagimliligi yok - cache'li reflection - guvenli `Try...` API'leri - tiplenmis metadata modelleri.
+
+### Kurulum
+
+```bash
+dotnet add package UmbrellaFrame.EnumCentricStatusManagement
 ```
 
-## Included APIs
-
-- `GetEnumStatus`
-- `TryGetEnumStatus`
-- `GetStatusMetadata`
-- `TryGetStatusMetadata`
-- `GetEnumInfos`
-- `TryGetEnumInfos`
-- `GetEnumInfo`
-- `GetEnumInfoOrDefault`
-- `GetInfoMetadata`
-- `TryGetInfoMetadata`
-- `GetLocalizedMessage`
-
-## Türkçe Özet
-
-UmbrellaFrame.EnumCentricStatusManagement, enum değerlerine merkezi mesaj, durum tipi ve açıklayıcı metadata eklemek için kullanılır.
-
-Bu paket özellikle veritabanından, API'den veya farklı sistemlerden gelen sayısal durum kodlarını daha okunabilir domain durumlarına çevirmek için faydalıdır.
+### Hizli Baslangic
 
 ```csharp
+using UmbrellaFrame.EnumCentricStatusManagement.Core;
+
 public enum OdemeDurumu
 {
-    [Status("Ödeme başarıyla tamamlandı.", StatusType.Success)]
+    [Status("Odeme basariyla tamamlandi.", StatusType.Success)]
     Tamamlandi = 0,
 
-    [Status("Ödeme kontrol bekliyor.", StatusType.Warning)]
+    [Status("Odeme kontrol bekliyor.", StatusType.Warning)]
     KontrolBekliyor = 1,
 
-    [Status("Ödeme başarısız oldu.", StatusType.Error)]
+    [Status("Odeme basarisiz oldu.", StatusType.Error)]
     Basarisiz = 2
 }
 
@@ -103,10 +99,6 @@ Console.WriteLine(metadata.Message);
 Console.WriteLine(metadata.IsError);
 ```
 
-## Target Framework
+### Lisans
 
-The package targets `netstandard2.0`, generates XML documentation, uses cached reflection internally, and has no database dependency.
-
-## License
-
-MIT.
+MIT (c) UmbrellaFrame
