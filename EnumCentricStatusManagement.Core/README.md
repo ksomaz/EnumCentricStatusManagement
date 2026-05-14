@@ -1,4 +1,14 @@
-# UmbrellaFrame.EnumCentricStatusManagement ![EnumCentricStatusManagement](https://raw.githubusercontent.com/ksomaz/EnumCentricStatusManagement/master/assets/umbrellaframe-enumcentricstatusmanagement-icon.png) [![NuGet](https://img.shields.io/nuget/v/UmbrellaFrame.EnumCentricStatusManagement.svg?style=flat-square)](https://www.nuget.org/packages/UmbrellaFrame.EnumCentricStatusManagement) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE) [![.NET Standard 2.0](https://img.shields.io/badge/.NET%20Standard-2.0-purple?style=flat-square)](https://learn.microsoft.com/dotnet/standard/net-standard)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ksomaz/EnumCentricStatusManagement/master/assets/umbrellaframe-enumcentricstatusmanagement-icon.png" width="180" alt="UmbrellaFrame.EnumCentricStatusManagement logo" />
+</p>
+
+<h1 align="center">UmbrellaFrame.EnumCentricStatusManagement</h1>
+
+<p align="center">
+  <a href="https://www.nuget.org/packages/UmbrellaFrame.EnumCentricStatusManagement"><img src="https://img.shields.io/badge/NuGet-ready-004880?style=flat-square" alt="NuGet ready" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="MIT license" /></a>
+  <a href="https://learn.microsoft.com/dotnet/standard/net-standard"><img src="https://img.shields.io/badge/.NET%20Standard-2.0-purple?style=flat-square" alt=".NET Standard 2.0" /></a>
+</p>
 
 **Language / Dil:** [English](#english) - [Turkce](#turkce)
 
