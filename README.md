@@ -1,137 +1,233 @@
 # Enum-Centric Status Management
 
-EnumCentricStatusManagement is an open-source C# library that provides a modern approach to **enum-based state management** in software projects. This library enhances enums with **customizable attributes** and improves code quality with **centralized error handling**. 
+[![CI](https://github.com/ksomaz/EnumCentricStatusManagement/actions/workflows/ci.yml/badge.svg)](https://github.com/ksomaz/EnumCentricStatusManagement/actions/workflows/ci.yml)
 
----
+EnumCentricStatusManagement is a lightweight .NET library that turns enum values into a centralized status metadata layer.
 
-## Features
+It helps teams keep status messages, severity information, and descriptive metadata close to the enum members that own them, instead of spreading repetitive `switch`, `if`, and magic-number mapping logic across services, controllers, database adapters, and UI code.
 
-- **Enum Based Management:** Simplifies state management by adding descriptive attributes to enums.
-- **Centralized Error Management:** Provides a centralized error handling mechanism through enum metadata.
-- **Easy Integration:** Easily integrates into your project and is extendable for custom use cases.
-- **Code Readability:** Makes your code cleaner and more descriptive by avoiding complex if/else structures.
+## Why It Exists
 
----
+Many business applications already communicate state through enum values or numeric status codes:
 
-## Quick Start
+- stored procedure output parameters,
+- external API response codes,
+- queue event states,
+- workflow results,
+- validation and domain operation outcomes.
 
-### 1. Installing the Library
+Those codes are stable, but the meaning around them often becomes scattered. EnumCentricStatusManagement keeps that meaning in one place.
 
-First, include the `EnumCentricStatusManagement` library in your project by using the following NuGet command:
+## Key Capabilities
+
+- Attribute-based status metadata for enum members.
+- Centralized message and severity handling.
+- Safe `Try...` APIs for unknown or missing metadata.
+- Typed convenience models: `StatusMetadata` and `InfoMetadata`.
+- Cached reflection after the first lookup.
+- Optional info metadata for display names and descriptions.
+- Localization helper through `ResourceManager`.
+- `netstandard2.0` target for broad compatibility.
+- No database dependency in the core package.
+- XML documentation support for IDE and NuGet consumers.
+
+## Installation
 
 ```sh
 dotnet add package EnumCentricStatusManagement
 ```
 
-### 2. Define an Enum with Attributes
+## Quick Example
 
-Use the library to define enums enriched with metadata for status management:
+```csharp
+using EnumCentricStatusManagement.Core;
 
-```sh
-public enum Status
+public enum UserRegistrationStatus
 {
-    [Status("Operation Successful", StatusType.Success)]
-    Success,
+    [Status("User created successfully.", StatusType.Success)]
+    Created = 0,
 
-    [Status("Operation Failed", StatusType.Error)]
-    Failure,
+    [Status("Email address is already in use.", StatusType.Warning)]
+    DuplicateEmail = 1,
 
-    [Status("User Not Found", StatusType.Warning)]
-    UserNotFound
+    [Status("User information could not be verified.", StatusType.Error)]
+    VerificationFailed = 2
 }
 ```
 
-```sh
-### 3. Access Enum Metadata
-Access the descriptive attributes attached to enums easily:
+Read required metadata when the enum value is trusted:
+
+```csharp
+var metadata = UserRegistrationStatus.VerificationFailed.GetStatusMetadata();
+
+Console.WriteLine(metadata.Message); // User information could not be verified.
+Console.WriteLine(metadata.IsError); // True
 ```
 
-### 4. Centralized Error Management
+Use safe lookup at system boundaries:
 
-Use enum metadata to implement a centralized error handling mechanism:
+```csharp
+var status = (UserRegistrationStatus)statusCodeFromDatabase;
 
-```sh
-try
+if (!status.TryGetStatusMetadata(out var metadata))
 {
-    var status = Status.Failure;
-    var statusInfo = status.GetEnumStatus();
+    return Results.Problem("Unknown status code returned by the database.");
+}
 
-    if (statusInfo.Type == StatusType.Error)
-    {
-        throw new Exception(statusInfo.Message);
-    }
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex.Message); // Output: "Operation Failed"
-}
+return metadata.IsError
+    ? Results.BadRequest(metadata.Message)
+    : Results.Ok(metadata.Message);
 ```
 
-### 5. Running Tests
+## Info Metadata
 
-Run the built-in tests to ensure the library works as expected:
+Use `InfoAttribute` when enum values also need display metadata:
+
+```csharp
+public enum AccountState
+{
+    [Info("Active", "The account can sign in and use the system.")]
+    Active,
+
+    [Info("Suspended", "The account is blocked until manual review.")]
+    Suspended
+}
+
+var info = AccountState.Active.GetInfoMetadata();
+
+Console.WriteLine(info.Name);
+Console.WriteLine(info.Description);
+```
+
+Fallback reads are available for partial metadata:
+
+```csharp
+var description = AccountState.Active.GetEnumInfoOrDefault(
+    InfoType.Description,
+    "No description available.");
+```
+
+## When To Use It
+
+Use this package when:
+
+- your application has repeated enum-to-message mapping logic,
+- numeric status codes need to become readable domain states,
+- API or database results need consistent success/warning/error handling,
+- status metadata should be close to the enum definition,
+- you want a small package instead of a full result-handling framework.
+
+Avoid it when:
+
+- status rules require complex runtime behavior,
+- messages must be fully dynamic and data-driven,
+- your project already has a mature result/error abstraction.
+
+## API Overview
+
+| API | Purpose |
+| --- | --- |
+| `GetEnumStatus()` | Returns the required `StatusAttribute`; throws a clear exception when missing. |
+| `TryGetEnumStatus(out StatusAttribute)` | Safe status attribute lookup. |
+| `GetStatusMetadata()` | Returns a typed `StatusMetadata` convenience model. |
+| `TryGetStatusMetadata(out StatusMetadata)` | Safe typed status metadata lookup. |
+| `GetEnumInfos()` | Returns all required `InfoAttribute` entries. |
+| `TryGetEnumInfos(out string[])` | Safe info array lookup. |
+| `GetEnumInfo(InfoType)` | Returns one required info entry by index. |
+| `GetEnumInfoOrDefault(InfoType, string)` | Returns one info entry or a fallback value. |
+| `GetInfoMetadata()` | Returns a typed `InfoMetadata` convenience model. |
+| `TryGetInfoMetadata(out InfoMetadata)` | Safe typed info metadata lookup. |
+| `GetLocalizedMessage(ResourceManager, string)` | Reads a resource value keyed by enum member name. |
+
+## Runnable Sample
 
 ```sh
+dotnet run --project samples/StatusMappingExample/StatusMappingExample.csproj
+```
+
+Expected output:
+
+```text
+Error: User information could not be verified.
+```
+
+## Development
+
+```sh
+dotnet restore
+dotnet build
 dotnet test
 ```
 
+Create a release package:
+
 ```sh
-Test run successful.
-Total tests: 3
-Passed: 3
+dotnet build EnumCentricStatusManagement.Core/EnumCentricStatusManagement.Core.csproj -c Release
+dotnet pack EnumCentricStatusManagement.Core/EnumCentricStatusManagement.Core.csproj -c Release --no-build
 ```
 
-### 6. Real-World Usage
+## Türkçe
 
-Integrate this library into your application. For example, in a Web API, you can use it as follows:
+EnumCentricStatusManagement, enum değerlerine merkezi durum mesajı, durum tipi ve açıklayıcı metadata eklemek için geliştirilmiş hafif bir .NET kütüphanesidir.
 
-```sh
-public IActionResult GetUser(int id)
+Özellikle veritabanı, harici API, kuyruk sistemi veya domain operasyonlarından gelen sayısal durum kodlarını daha okunabilir ve yönetilebilir hale getirmek için kullanılır.
+
+### Ne Sağlar?
+
+- Enum değerinin mesajını enum tanımının yanında tutar.
+- `Success`, `Warning`, `Error` gibi durum tiplerini standartlaştırır.
+- Dağınık `switch` / `if` bloklarını azaltır.
+- Bilinmeyen enum değerlerinde güvenli `Try...` metotları sunar.
+- Reflection maliyetini ilk okumadan sonra cache ile azaltır.
+- NuGet paketi olarak bağımsızdır; veritabanı bağımlılığı içermez.
+
+### Türkçe Kullanım Örneği
+
+```csharp
+using EnumCentricStatusManagement.Core;
+
+public enum SiparisDurumu
 {
-    var user = userRepository.FindById(id);
+    [Status("Sipariş başarıyla oluşturuldu.", StatusType.Success)]
+    Olusturuldu = 0,
 
-    if (user == null)
-        return BadRequest(Status.UserNotFound.GetEnumStatus().Message);
+    [Status("Sipariş onay bekliyor.", StatusType.Warning)]
+    OnayBekliyor = 1,
 
-    return Ok(user);
+    [Status("Sipariş oluşturulamadı.", StatusType.Error)]
+    Olusturulamadi = 2
 }
-```
-### Project Structure
 
-The project is organized as follows:
+var durum = SiparisDurumu.Olusturulamadi;
+var metadata = durum.GetStatusMetadata();
 
-```sh
-EnumCentricStatusManagement/
-├── src/
-│   ├── Enums/
-│   ├── Attributes/
-│   ├── Extensions/
-├── tests/
-│   ├── DatabaseTests.cs
-│   ├── EnumTests.cs
-├── docs/
-│   ├── README.md
-│   ├── USAGE.md
-│   ├── CHANGELOG.md
-
+Console.WriteLine(metadata.Message);
+Console.WriteLine(metadata.IsError);
 ```
 
-**src:** Contains core library code.
-**tests:** Includes unit and integration tests.
-**docs:** Contains documentation files.
+Harici sistemlerden gelen kodlarda güvenli kullanım:
 
-### Contributing
+```csharp
+var durum = (SiparisDurumu)veritabanindanGelenDurumKodu;
 
-To contribute to this project:
+if (!durum.TryGetStatusMetadata(out var metadata))
+{
+    return Results.Problem("Bilinmeyen durum kodu döndü.");
+}
 
-Fork the repository.
-Create a new branch: git checkout -b feature/your-feature.
-Make your changes and commit them: git commit -m "Add some feature".
-Push to the branch: git push origin feature/your-feature.
-Open a pull request.
+return metadata.IsError
+    ? Results.BadRequest(metadata.Message)
+    : Results.Ok(metadata.Message);
+```
 
----
+### Ne Zaman Tercih Edilmeli?
 
-### License
+Bu paket; küçük, net ve merkezi bir enum metadata çözümü gerektiğinde uygundur. Büyük bir result framework yerine, mevcut enum tabanlı akışınızı daha okunabilir ve bakımı kolay hale getirmek için tasarlanmıştır.
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+## Release Notes
+
+See [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+MIT. See [LICENSE.txt](LICENSE.txt).

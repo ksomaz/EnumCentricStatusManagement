@@ -1,137 +1,110 @@
-﻿# EnumCentricStatusManagement
+# EnumCentricStatusManagement
 
-EnumCentricStatusManagement is an open-source C# library that provides a modern approach to **enum-based state management** in software projects. This library enhances enums with **customizable attributes** and improves code quality with **centralized error handling**. 
+EnumCentricStatusManagement is a lightweight enum metadata package for .NET.
 
----
+It keeps status messages, severity values, and display metadata close to the enum values that own them. The package is useful for API responses, database status codes, workflow results, validation outcomes, and other enum-based state flows.
 
-## Features
-
-- **Enum Based Management:** Simplifies state management by adding descriptive attributes to enums.
-- **Centralized Error Management:** Provides a centralized error handling mechanism through enum metadata.
-- **Easy Integration:** Easily integrates into your project and is extendable for custom use cases.
-- **Code Readability:** Makes your code cleaner and more descriptive by avoiding complex if/else structures.
-
----
-
-## Quick Start
-
-### 1. Installing the Library
-
-First, include the `EnumCentricStatusManagement` library in your project by using the following NuGet command:
+## Install
 
 ```sh
 dotnet add package EnumCentricStatusManagement
 ```
 
-### 2. Define an Enum with Attributes
+## Status Metadata
 
-Use the library to define enums enriched with metadata for status management:
+```csharp
+using EnumCentricStatusManagement.Core;
 
-```sh
-public enum Status
+public enum OperationStatus
 {
-    [Status("Operation Successful", StatusType.Success)]
-    Success,
+    [Status("Operation completed.", StatusType.Success)]
+    Completed = 0,
 
-    [Status("Operation Failed", StatusType.Error)]
-    Failure,
+    [Status("Operation requires attention.", StatusType.Warning)]
+    RequiresAttention = 1,
 
-    [Status("User Not Found", StatusType.Warning)]
-    UserNotFound
+    [Status("Operation failed.", StatusType.Error)]
+    Failed = 2
+}
+
+var metadata = OperationStatus.Failed.GetStatusMetadata();
+
+Console.WriteLine(metadata.Message);
+Console.WriteLine(metadata.IsError);
+```
+
+Use safe lookup for values coming from external systems:
+
+```csharp
+var status = (OperationStatus)externalStatusCode;
+
+if (status.TryGetStatusMetadata(out var metadata))
+{
+    Console.WriteLine(metadata.Message);
 }
 ```
 
-```sh
-### 3. Access Enum Metadata
-Access the descriptive attributes attached to enums easily:
-```
+## Info Metadata
 
-### 4. Centralized Error Management
-
-Use enum metadata to implement a centralized error handling mechanism:
-
-```sh
-try
+```csharp
+public enum AccountState
 {
-    var status = Status.Failure;
-    var statusInfo = status.GetEnumStatus();
+    [Info("Active", "The account can use the system.")]
+    Active,
 
-    if (statusInfo.Type == StatusType.Error)
-    {
-        throw new Exception(statusInfo.Message);
-    }
+    [Info("Suspended", "The account requires manual review.")]
+    Suspended
 }
-catch (Exception ex)
+
+var info = AccountState.Active.GetInfoMetadata();
+
+Console.WriteLine(info.Name);
+Console.WriteLine(info.Description);
+```
+
+## Included APIs
+
+- `GetEnumStatus`
+- `TryGetEnumStatus`
+- `GetStatusMetadata`
+- `TryGetStatusMetadata`
+- `GetEnumInfos`
+- `TryGetEnumInfos`
+- `GetEnumInfo`
+- `GetEnumInfoOrDefault`
+- `GetInfoMetadata`
+- `TryGetInfoMetadata`
+- `GetLocalizedMessage`
+
+## Türkçe Özet
+
+EnumCentricStatusManagement, enum değerlerine merkezi mesaj, durum tipi ve açıklayıcı metadata eklemek için kullanılır.
+
+Bu paket özellikle veritabanından, API'den veya farklı sistemlerden gelen sayısal durum kodlarını daha okunabilir domain durumlarına çevirmek için faydalıdır.
+
+```csharp
+public enum OdemeDurumu
 {
-    Console.WriteLine(ex.Message); // Output: "Operation Failed"
+    [Status("Ödeme başarıyla tamamlandı.", StatusType.Success)]
+    Tamamlandi = 0,
+
+    [Status("Ödeme kontrol bekliyor.", StatusType.Warning)]
+    KontrolBekliyor = 1,
+
+    [Status("Ödeme başarısız oldu.", StatusType.Error)]
+    Basarisiz = 2
 }
+
+var metadata = OdemeDurumu.Basarisiz.GetStatusMetadata();
+
+Console.WriteLine(metadata.Message);
+Console.WriteLine(metadata.IsError);
 ```
 
-### 5. Running Tests
+## Target Framework
 
-Run the built-in tests to ensure the library works as expected:
+The package targets `netstandard2.0`, generates XML documentation, uses cached reflection internally, and has no database dependency.
 
-```sh
-dotnet test
-```
+## License
 
-```sh
-Test run successful.
-Total tests: 3
-Passed: 3
-```
-
-### 6. Real-World Usage
-
-Integrate this library into your application. For example, in a Web API, you can use it as follows:
-
-```sh
-public IActionResult GetUser(int id)
-{
-    var user = userRepository.FindById(id);
-
-    if (user == null)
-        return BadRequest(Status.UserNotFound.GetEnumStatus().Message);
-
-    return Ok(user);
-}
-```
-### Project Structure
-
-The project is organized as follows:
-
-```sh
-EnumCentricStatusManagement/
-├── src/
-│   ├── Enums/
-│   ├── Attributes/
-│   ├── Extensions/
-├── tests/
-│   ├── DatabaseTests.cs
-│   ├── EnumTests.cs
-├── docs/
-│   ├── README.md
-│   ├── USAGE.md
-│   ├── CHANGELOG.md
-
-```
-
-**src:** Contains core library code.
-**tests:** Includes unit and integration tests.
-**docs:** Contains documentation files.
-
-### Contributing
-
-To contribute to this project:
-
-Fork the repository.
-Create a new branch: git checkout -b feature/your-feature.
-Make your changes and commit them: git commit -m "Add some feature".
-Push to the branch: git push origin feature/your-feature.
-Open a pull request.
-
----
-
-### License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
+MIT.

@@ -1,16 +1,93 @@
 ﻿
 using System;
+using System.Globalization;
+using System.Resources;
+using EnumCentricStatusManagement.Core.Internal;
 
 namespace EnumCentricStatusManagement.Core
 {
+    /// <summary>
+    /// Provides extension methods for reading status metadata from enum values.
+    /// </summary>
     public static class EnumExtensions
     {
+        /// <summary>
+        /// Gets the required <see cref="StatusAttribute"/> for an enum value.
+        /// </summary>
         public static StatusAttribute GetEnumStatus(this Enum status)
         {
-            var type = status.GetType();
-            var memInfo = type.GetMember(status.ToString());
-            var attributes = memInfo[0].GetCustomAttributes(typeof(StatusAttribute), false);
-            return (StatusAttribute)attributes[0];
+            if (status == null)
+            {
+                throw new ArgumentNullException(nameof(status));
+            }
+
+            if (status.TryGetEnumStatus(out var attribute))
+            {
+                return attribute;
+            }
+
+            throw new InvalidOperationException(
+                $"Enum value '{status}' does not define a {nameof(StatusAttribute)}.");
+        }
+
+        /// <summary>
+        /// Attempts to get the <see cref="StatusAttribute"/> for an enum value.
+        /// </summary>
+        public static bool TryGetEnumStatus(this Enum status, out StatusAttribute attribute)
+        {
+            attribute = null;
+
+            if (status == null)
+            {
+                return false;
+            }
+
+            attribute = EnumMetadataCache.Get(status).StatusAttribute;
+            return attribute != null;
+        }
+
+        /// <summary>
+        /// Gets a typed metadata object for an enum value with status metadata.
+        /// </summary>
+        public static StatusMetadata GetStatusMetadata(this Enum status)
+        {
+            var attribute = status.GetEnumStatus();
+            return new StatusMetadata(status, attribute.Message, attribute.Type);
+        }
+
+        /// <summary>
+        /// Attempts to get a typed metadata object for an enum value with status metadata.
+        /// </summary>
+        public static bool TryGetStatusMetadata(this Enum status, out StatusMetadata metadata)
+        {
+            metadata = null;
+
+            if (!status.TryGetEnumStatus(out var attribute))
+            {
+                return false;
+            }
+
+            metadata = new StatusMetadata(status, attribute.Message, attribute.Type);
+            return true;
+        }
+
+        /// <summary>
+        /// Reads a localized resource string using the enum member name as the resource key.
+        /// </summary>
+        public static string GetLocalizedMessage(this Enum status, ResourceManager resourceManager, string language = "en")
+        {
+            if (status == null)
+            {
+                throw new ArgumentNullException(nameof(status));
+            }
+
+            if (resourceManager == null)
+            {
+                throw new ArgumentNullException(nameof(resourceManager));
+            }
+
+            var culture = new CultureInfo(language);
+            return resourceManager.GetString(status.ToString(), culture) ?? "Message not available.";
         }
     }
 }
